@@ -7,11 +7,15 @@ import java.util.Deque;
 import java.util.logging.Logger;
 
 public class HotelRequestBuffer {
-    static Logger log = Logger.getLogger(HotelRequestBuffer.class.getName());
+    private static Logger log = Logger.getLogger(HotelRequestBuffer.class.getName());
     private static final int BUFFER_CAPACITY = 5;
     private Deque<HotelRequest> requestsBuffer = new ArrayDeque<>();
 
-    public synchronized void takeRequest() {
+    public HotelRequestBuffer() {
+        log.info("buffer was created;");
+    }
+
+    public synchronized boolean takeRequest() {
         while (requestsBuffer.isEmpty()) {
             try {
                 wait();
@@ -19,13 +23,14 @@ public class HotelRequestBuffer {
                 e.printStackTrace();
             }
         }
-        requestsBuffer.pollLast(); //Thread.currentThread().getName(),
-        log.info(Thread.currentThread().getName() + "took request from the buffer");
-        log.info("Currently " + requestsBuffer.size() + " requests in buffer;");
-        notify();
+        requestsBuffer.pollLast();
+        log.info(Thread.currentThread().getName() + " took request from the buffer, currently "
+                + requestsBuffer.size() + " requests in buffer;");
+        notifyAll();
+        return true;
     }
 
-    public synchronized void putRequest(HotelRequest hotelRequest) {
+    public synchronized boolean putRequest(HotelRequest hotelRequest) {
         while (requestsBuffer.size() >= BUFFER_CAPACITY) {
             try {
                 wait();
@@ -34,7 +39,13 @@ public class HotelRequestBuffer {
             }
         }
         requestsBuffer.addFirst(hotelRequest);
-        log.info(Thread.currentThread().getName() + "put request in the buffer");
-        log.info("Currently " + requestsBuffer.size() + " requests in buffer;");
+        log.info(Thread.currentThread().getName() + " put request in the buffer, currently "
+                + requestsBuffer.size() + " requests in buffer;");
+        notifyAll();
+        return true;
+    }
+
+    public synchronized boolean isBufferEmpty() {
+        return requestsBuffer.isEmpty();
     }
 }
