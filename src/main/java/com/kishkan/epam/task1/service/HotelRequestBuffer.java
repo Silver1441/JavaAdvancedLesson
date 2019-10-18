@@ -1,51 +1,47 @@
 package com.kishkan.epam.task1.service;
 
 import com.kishkan.epam.task1.dto.HotelRequest;
+import com.kishkan.epam.task1.repository.HotelRequestRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.logging.Logger;
 
 public class HotelRequestBuffer {
-    private static Logger log = Logger.getLogger(HotelRequestBuffer.class.getName());
+    private static Logger log = LoggerFactory.getLogger(HotelRequestBuffer.class);
     private static final int BUFFER_CAPACITY = 5;
+    private HotelRequestRepository hotelRequestRepository;
     private Deque<HotelRequest> requestsBuffer = new ArrayDeque<>();
 
-    public HotelRequestBuffer() {
-        log.info("buffer was created;");
+    public HotelRequestBuffer(HotelRequestRepository hotelRequestRepository) {
+        this.hotelRequestRepository = hotelRequestRepository;
+        log.info("->Buffer was created;");
     }
 
-    public synchronized boolean takeRequest() {
-        while (requestsBuffer.isEmpty()) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+    public synchronized void takeRequest() throws InterruptedException {
+        while (requestsBuffer.isEmpty() && !hotelRequestRepository.isRequestStackEmpty()) {
+            wait();
         }
-        requestsBuffer.pollLast();
-        log.info(Thread.currentThread().getName() + " took request from the buffer, currently "
-                + requestsBuffer.size() + " requests in buffer;");
-        notifyAll();
-        return true;
+        if(isBufferNotEmpty()) {
+            requestsBuffer.pollLast();
+            log.info(Thread.currentThread().getName() + " took request from the buffer, currently "
+                    + requestsBuffer.size() + " requests in buffer;");
+            notifyAll();
+        }
     }
 
-    public synchronized boolean putRequest(HotelRequest hotelRequest) {
+    public synchronized void putRequest(HotelRequest hotelRequest) throws InterruptedException {
         while (requestsBuffer.size() >= BUFFER_CAPACITY) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            wait();
         }
         requestsBuffer.addFirst(hotelRequest);
         log.info(Thread.currentThread().getName() + " put request in the buffer, currently "
                 + requestsBuffer.size() + " requests in buffer;");
         notifyAll();
-        return true;
     }
 
-    public synchronized boolean isBufferEmpty() {
-        return requestsBuffer.isEmpty();
+    public synchronized boolean isBufferNotEmpty() {
+        return !requestsBuffer.isEmpty();
     }
 }
