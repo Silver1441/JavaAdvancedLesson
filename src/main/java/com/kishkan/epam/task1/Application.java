@@ -4,12 +4,11 @@ import com.kishkan.epam.task1.repository.HotelRequestRepository;
 import com.kishkan.epam.task1.repository.HotelRequestRepositoryMockImpl;
 import com.kishkan.epam.task1.service.HotelRequestBuffer;
 import com.kishkan.epam.task1.service.ThreadsStarter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 public class Application {
-    private static Logger log = LoggerFactory.getLogger(Application.class);
     public static void main(String[] args) {
         log.info("->Application init;");
         final int NUMBER_OF_PRODUCERS = 3;

@@ -3,17 +3,15 @@ package com.kishkan.epam.task1.service;
 import com.kishkan.epam.task1.repository.HotelRequestRepository;
 import com.kishkan.epam.task1.runner.ConsumerTask;
 import com.kishkan.epam.task1.runner.ProducerTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
+@Slf4j
 public class ThreadsStarter {
-    private static Logger log = LoggerFactory.getLogger(ThreadsStarter.class);
     private HotelRequestBuffer hotelRequestBuffer;
     private HotelRequestRepository hotelRequestRepository;
 
@@ -32,13 +30,7 @@ public class ThreadsStarter {
             producerExecutor.execute(new ProducerTask(hotelRequestBuffer, hotelRequestRepository));
         }
         producerExecutor.shutdown();
-
-//        try {
-//            producerExecutor.awaitTermination(10, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            producerExecutor.shutdownNow();
-//        }
-        log.info("  Producer executor service was shut down;");
+        log.info("Producer executor service was shut down;");
         return true;
     }
 
@@ -52,13 +44,7 @@ public class ThreadsStarter {
             consumerExecutor.execute(new ConsumerTask(hotelRequestBuffer, hotelRequestRepository));
         }
         consumerExecutor.shutdown();
-
-        try {
-            consumerExecutor.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            consumerExecutor.shutdownNow();
-        }
-        log.info("  Consumer executor service was shut down;");
+        log.info("Consumer executor service was shut down;");
         return true;
     }
 }

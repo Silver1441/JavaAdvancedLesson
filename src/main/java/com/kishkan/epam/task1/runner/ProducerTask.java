@@ -2,18 +2,17 @@ package com.kishkan.epam.task1.runner;
 
 import com.kishkan.epam.task1.repository.HotelRequestRepository;
 import com.kishkan.epam.task1.service.HotelRequestBuffer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@RequiredArgsConstructor
 public class ProducerTask implements Runnable {
-    private static Logger log = LoggerFactory.getLogger(ProducerTask.class);
+    @NonNull
     private HotelRequestBuffer hotelRequestBuffer;
+    @NonNull
     private HotelRequestRepository hotelRequestRepository;
-
-    public ProducerTask(HotelRequestBuffer hotelRequestBuffer, HotelRequestRepository hotelRequestRepository) {
-        this.hotelRequestBuffer = hotelRequestBuffer;
-        this.hotelRequestRepository = hotelRequestRepository;
-    }
 
     @Override
     public void run() {

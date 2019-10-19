@@ -2,20 +2,25 @@ package com.kishkan.epam.task1.service;
 
 import com.kishkan.epam.task1.dto.HotelRequest;
 import com.kishkan.epam.task1.repository.HotelRequestRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@Slf4j
 public class HotelRequestBuffer {
-    private static Logger log = LoggerFactory.getLogger(HotelRequestBuffer.class);
-    private static final int BUFFER_CAPACITY = 5;
+    private int bufferCapacity = 5;
     private HotelRequestRepository hotelRequestRepository;
     private Deque<HotelRequest> requestsBuffer = new ArrayDeque<>();
 
     public HotelRequestBuffer(HotelRequestRepository hotelRequestRepository) {
         this.hotelRequestRepository = hotelRequestRepository;
+        log.info("->Buffer was created;");
+    }
+
+    public HotelRequestBuffer(HotelRequestRepository hotelRequestRepository, int bufferCapacity) {
+        this.hotelRequestRepository = hotelRequestRepository;
+        this.bufferCapacity = bufferCapacity;
         log.info("->Buffer was created;");
     }
 
@@ -32,7 +37,7 @@ public class HotelRequestBuffer {
     }
 
     public synchronized void putRequest(HotelRequest hotelRequest) throws InterruptedException {
-        while (requestsBuffer.size() >= BUFFER_CAPACITY) {
+        while (requestsBuffer.size() >= bufferCapacity) {
             wait();
         }
         requestsBuffer.addFirst(hotelRequest);
@@ -43,5 +48,13 @@ public class HotelRequestBuffer {
 
     public synchronized boolean isBufferNotEmpty() {
         return !requestsBuffer.isEmpty();
+    }
+
+    public int getBufferCapacity() {
+        return bufferCapacity;
+    }
+
+    public void setBufferCapacity(int bufferCapacity) {
+        this.bufferCapacity = bufferCapacity;
     }
 }
