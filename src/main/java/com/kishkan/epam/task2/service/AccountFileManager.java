@@ -1,9 +1,8 @@
 package com.kishkan.epam.task2.service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import com.kishkan.epam.task2.dto.Account;
+
+import java.io.*;
 
 public class AccountFileManager {
     private String source = "src/main/resources/accounts/";
@@ -17,14 +16,17 @@ public class AccountFileManager {
         this.source = accountSource;
     }
 
-    public String getFileById(Long id) throws IOException {
-        Path path = Paths.get(source + PREFIX + id + EXTENSION);
-        return new String(Files.readAllBytes(path));
+    public void writeAccountById(Account account, long id) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(source + PREFIX + id + EXTENSION);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeObject(account);
     }
 
-    public void updateFileById(Long id, String string) throws IOException {
-        Path path = Paths.get(source + PREFIX + id + EXTENSION);
-        Files.write(path, string.getBytes());
+    public Account getAccountById(long id) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(source + PREFIX + id + EXTENSION);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        return (Account) objectInputStream.readObject();
     }
 
 

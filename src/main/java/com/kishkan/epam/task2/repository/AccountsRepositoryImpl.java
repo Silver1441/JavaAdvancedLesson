@@ -2,6 +2,7 @@ package com.kishkan.epam.task2.repository;
 
 import com.kishkan.epam.task2.dto.Account;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,7 +16,7 @@ public class AccountsRepositoryImpl implements AccountsRepository {
 
     public Account getAccountById(long id) {
         return accounts.stream()
-                .filter((account)->(account.getId() == id))
+                .filter((account) -> (account.getId() == id))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("id: " + id + "is not found;"));
     }
