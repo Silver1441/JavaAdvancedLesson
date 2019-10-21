@@ -12,11 +12,10 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 public class Account implements Serializable {
-    private final long SERIAL_VERSION_ID = 0;
+    private static final long serialVersionUID = 1L;
 
     private String name;
     private String surname;
     private long id;
     private long balance;
-
 }
