@@ -7,6 +7,7 @@ import com.kishkan.epam.task2.repository.AccountsRepositoryImpl;
 import com.kishkan.epam.task2.service.AccountFileManager;
 import com.kishkan.epam.task2.service.ThreadStarter;
 import com.kishkan.epam.task2.service.TransactionExecutor;
+import com.kishkan.epam.task2.service.TransactionManager;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +17,8 @@ public class Application {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         AccountFileManager accountFileManager = new AccountFileManager();
         AccountsRepository accountsRepository = new AccountsRepositoryImpl();
-        TransactionExecutor transactionExecutor = new TransactionExecutor(accountsRepository);
+        TransactionExecutor transactionExecutor = new TransactionExecutor();
+        TransactionManager transactionManager = new TransactionManager(accountsRepository, transactionExecutor);
         Account account1 = new Account("John", "Doe", 1001L, 54655);
         accountFileManager.writeAccountById(account1);
         Account account2 = new Account("Mike", "Smith", 1002L, 685);
@@ -30,7 +32,7 @@ public class Application {
 //        System.out.println(result);
         accountsRepository.setAccountsList(result);
 
-        ThreadStarter threadStarter = new ThreadStarter(transactionExecutor);
+        ThreadStarter threadStarter = new ThreadStarter(transactionManager);
         threadStarter.startTransactionThreads();
     }
 }

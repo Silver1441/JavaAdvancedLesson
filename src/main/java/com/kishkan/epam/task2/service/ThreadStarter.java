@@ -9,10 +9,10 @@ import java.util.concurrent.ThreadFactory;
 
 public class ThreadStarter {
     private int numberOfThreads = 20;
-    private TransactionExecutor transactionExecutor;
+    private TransactionManager transactionManager;
 
-    public ThreadStarter(TransactionExecutor transactionExecutor) {
-        this.transactionExecutor = transactionExecutor;
+    public ThreadStarter(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     public void startTransactionThreads() {
@@ -21,7 +21,7 @@ public class ThreadStarter {
                 .build();
         final ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads, factory);
         for (int i = 1; i <= numberOfThreads; i++) {
-            executor.execute(new TransactionTask(transactionExecutor));
+            executor.execute(new TransactionTask(transactionManager));
         }
         executor.shutdown();
     }
