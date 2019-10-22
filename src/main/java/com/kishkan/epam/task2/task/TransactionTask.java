@@ -1,14 +1,16 @@
 package com.kishkan.epam.task2.task;
 
 import com.kishkan.epam.task2.entity.Account;
-import com.kishkan.epam.task2.exception.InvalidAccountException;
-import com.kishkan.epam.task2.exception.LowBalanceException;
 import com.kishkan.epam.task2.repository.AccountsRepository;
 import com.kishkan.epam.task2.service.TransactionManager;
+import com.kishkan.epam.task2.utility.TransactionCounter;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TransactionTask implements Runnable {
+    private final int minAmount = 1;
+    private final int maxAmount = 30;
+
     private TransactionManager transactionManager;
     private AccountsRepository accountsRepository;
 
@@ -19,11 +21,9 @@ public class TransactionTask implements Runnable {
 
     @Override
     public void run() {
-        for(int i = 0; i < 5; i++) {
+        while (TransactionCounter.getCounter() <= 1000) {
             Account sender = pickRandomAccount();
             Account recipient = pickRandomAccount();
-//            Account sender = accountsRepository.getAccountById(1001L);
-//            Account recipient = accountsRepository.getAccountById(1002l);
             transactionManager.makeTransaction(sender, recipient, pickRandomValue());
         }
     }
@@ -34,6 +34,6 @@ public class TransactionTask implements Runnable {
     }
 
     private long pickRandomValue() {
-        return ThreadLocalRandom.current().nextInt(1, 30);
+        return ThreadLocalRandom.current().nextInt( minAmount, maxAmount);
     }
 }
