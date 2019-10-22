@@ -1,6 +1,6 @@
 package task2;
 
-import com.kishkan.epam.task2.dto.Account;
+import com.kishkan.epam.task2.entity.Account;
 import com.kishkan.epam.task2.repository.AccountsRepository;
 import com.kishkan.epam.task2.repository.AccountsRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;

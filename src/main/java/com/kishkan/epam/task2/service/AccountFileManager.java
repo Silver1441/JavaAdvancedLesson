@@ -1,6 +1,6 @@
 package com.kishkan.epam.task2.service;
 
-import com.kishkan.epam.task2.dto.Account;
+import com.kishkan.epam.task2.entity.Account;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,7 +16,8 @@ public class AccountFileManager {
     private final String PREFIX = "id";
 
     public void writeAccountById(Account account) {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(source + PREFIX + account.getId() + EXTENSION);
+        try (FileOutputStream fileOutputStream =
+                     new FileOutputStream(source + PREFIX + account.getId() + EXTENSION);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             objectOutputStream.writeObject(account);
         } catch (IOException e) {
@@ -33,17 +34,19 @@ public class AccountFileManager {
 
     public List<Account> getAllAccounts() {
         List<Account> result = new ArrayList<>();
-        scanFilePaths(result);
+        try {
+            scanFilePaths(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 
-    private void scanFilePaths(List<Account> result) {
+    private void scanFilePaths(List<Account> result) throws IOException {
         try (Stream<Path> walk = Files.walk(Paths.get(source))) {
             walk
                     .filter(path -> Files.isRegularFile(path))
                     .forEach(path -> addAccountToListByPath(path, result));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
