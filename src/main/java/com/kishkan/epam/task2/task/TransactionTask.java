@@ -1,39 +1,18 @@
 package com.kishkan.epam.task2.task;
 
-import com.kishkan.epam.task2.entity.Account;
-import com.kishkan.epam.task2.repository.AccountsRepository;
-import com.kishkan.epam.task2.service.TransactionManager;
-import com.kishkan.epam.task2.utility.TransactionCounter;
-
-import java.util.concurrent.ThreadLocalRandom;
+import com.kishkan.epam.task2.service.TransactionExecutor;
 
 public class TransactionTask implements Runnable {
-    private final int minAmount = 1;
-    private final int maxAmount = 30;
+    private TransactionExecutor transactionExecutor;
 
-    private TransactionManager transactionManager;
-    private AccountsRepository accountsRepository;
-
-    public TransactionTask(TransactionManager transactionManager, AccountsRepository accountsRepository) {
-        this.transactionManager = transactionManager;
-        this.accountsRepository = accountsRepository;
+    public TransactionTask(TransactionExecutor transactionExecutor) {
+        this.transactionExecutor = transactionExecutor;
     }
 
     @Override
     public void run() {
-        while (TransactionCounter.getCounter() <= 1000) {
-            Account sender = pickRandomAccount();
-            Account recipient = pickRandomAccount();
-            transactionManager.makeTransaction(sender, recipient, pickRandomValue());
+        for (int i = 0; i < 50; i++) {
+            transactionExecutor.makeTransaction();
         }
-    }
-
-    private Account pickRandomAccount() {
-        int randomValue = ThreadLocalRandom.current().nextInt(accountsRepository.getAccountsNumber());
-        return accountsRepository.getAccountByListIndex(randomValue);
-    }
-
-    private long pickRandomValue() {
-        return ThreadLocalRandom.current().nextInt( minAmount, maxAmount);
     }
 }
