@@ -1,12 +1,13 @@
-package com.kishkan.epam.task2.repository;
+package com.kishkan.epam.task2.dao;
 
 import com.kishkan.epam.task2.entity.Account;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
-public class AccountsRepositoryImpl implements AccountsRepository {
+public class AccountsDaoImpl implements AccountsDao {
     private List<Account> accounts = new ArrayList<>();
 
     @Override
@@ -35,6 +36,13 @@ public class AccountsRepositoryImpl implements AccountsRepository {
     @Override
     public synchronized List<Account> getAccountsList() {
         return accounts;
+    }
+
+    @Override
+    public long getAccountsTotalBalance() {
+        List<Long> balanceList = accounts.stream().map(Account::getBalance).collect(Collectors.toList());
+        return balanceList.stream().mapToLong(Long::valueOf).sum();
+
     }
 
     @Override

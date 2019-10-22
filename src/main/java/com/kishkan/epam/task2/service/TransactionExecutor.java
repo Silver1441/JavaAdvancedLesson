@@ -10,18 +10,22 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TransactionExecutor {
 
-    public void makeTransaction(Account sender, Account recipient, long amount) throws InvalidAccountException, LowBalanceException {
+    public void makeTransaction(Account sender, Account recipient, long amount)
+            throws InvalidAccountException, LowBalanceException {
         lockAccountsByIdPriority(sender, recipient);
         try {
             if (validateTransaction(sender, recipient, amount)) {
                 int transactionId = TransactionCounter.incrementCounter();
+
                 log.info("/ Transaction #{}: from id({}) to id({}) - {}$ (thread: {})",
                         transactionId, sender.getId(), recipient.getId(), amount, Thread.currentThread().getName());
                 log.info("  Transaction #{}, before: from [id({}), balance({})] to [id({}), balance({})] (thread: {})",
                         transactionId, sender.getId(), sender.getBalance(), recipient.getId(), recipient.getBalance(),
                         Thread.currentThread().getName());
+
                 sender.setBalance(sender.getBalance() - amount);
                 recipient.setBalance(recipient.getBalance() + amount);
+
                 log.info("\\ Transaction #{}, after:  from [id({}), balance({})] to [id({}), balance({})] (thread: {})",
                         transactionId, sender.getId(), sender.getBalance(), recipient.getId(), recipient.getBalance(),
                         Thread.currentThread().getName());

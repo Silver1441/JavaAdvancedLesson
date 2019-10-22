@@ -1,8 +1,8 @@
 package task2;
 
 import com.kishkan.epam.task2.entity.Account;
-import com.kishkan.epam.task2.repository.AccountsRepository;
-import com.kishkan.epam.task2.repository.AccountsRepositoryImpl;
+import com.kishkan.epam.task2.dao.AccountsDao;
+import com.kishkan.epam.task2.dao.AccountsDaoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,12 +12,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AccountsRepositoryTest {
-    private AccountsRepository repository;
+public class AccountsDaoTest {
+    private AccountsDao repository;
 
     @BeforeEach
     public void Init() {
-        repository = new AccountsRepositoryImpl();
+        repository = new AccountsDaoImpl();
         String name = "John";
         String surname = "Doe";
         long id = 101L;
