@@ -15,6 +15,10 @@ public class TransactionManager {
                 sender.setBalance(sender.getBalance() - amount);
                 recipient.setBalance(recipient.getBalance() + amount);
             }
+        } catch (InvalidAccountException e) {
+            log.info("->!Same id: {}", sender.getId());
+        } catch (LowBalanceException e) {
+            log.info("->!Low balance");
         } finally {
             sender.unlockAccount();
             recipient.unlockAccount();
@@ -33,17 +37,16 @@ public class TransactionManager {
         }
     }
 
-    private boolean validateTransaction(Account sender, Account recipient, long amount) {
+    private boolean validateTransaction(Account sender, Account recipient, long amount) throws InvalidAccountException, LowBalanceException {
         if (sender.getBalance() < amount) {
-            log.info("->!Low balance");
-            return false;
-            //throw new LowBalanceException(sender);
+
+            //return false;
+            throw new LowBalanceException(sender);
         }
 
         if (sender.getId() == recipient.getId()) {
-            log.info("->!Same id");
-            return false;
-            //throw new InvalidAccountException(sender, "transaction to the same account!");
+            //return false;
+            throw new InvalidAccountException(sender, "transaction to the same account!");
         }
         return true;
     }
