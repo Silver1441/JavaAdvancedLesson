@@ -1,11 +1,13 @@
 package com.kishkan.epam.task2.entity;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@Slf4j
 @ToString
 @RequiredArgsConstructor
 public class Account implements Serializable {
@@ -19,7 +21,12 @@ public class Account implements Serializable {
     @ToString.Exclude private Lock lock = new ReentrantLock();
 
     public void lockAccount() {
-        lock.lock();
+        if(lock.tryLock()) {
+            log.info("!Account id({}) is locked by another transaction (thread: {})",
+                    getId(), Thread.currentThread().getName());
+        } else {
+            lock.lock();
+        }
     }
     public void unlockAccount() {
         lock.unlock();

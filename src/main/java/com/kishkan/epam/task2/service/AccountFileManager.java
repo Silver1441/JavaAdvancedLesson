@@ -1,6 +1,8 @@
 package com.kishkan.epam.task2.service;
 
 import com.kishkan.epam.task2.entity.Account;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,13 +13,13 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class AccountFileManager {
-    private String source = "src/main/resources/accounts/";
+    @Getter @Setter private String source = "src/main/resources/accounts/input/";
+    @Getter @Setter private String prefix = "input_id";
     private final String EXTENSION = ".dat";
-    private final String PREFIX = "id";
 
     public void writeAccountById(Account account) {
         try (FileOutputStream fileOutputStream =
-                     new FileOutputStream(source + PREFIX + account.getId() + EXTENSION);
+                     new FileOutputStream(source + prefix + account.getId() + EXTENSION);
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             objectOutputStream.writeObject(account);
         } catch (IOException e) {
@@ -25,8 +27,14 @@ public class AccountFileManager {
         }
     }
 
+    public void writeAccountsFromList(List<Account> accounts) {
+        for (Account account : accounts) {
+            writeAccountById(account);
+        }
+    }
+
     public Account getAccountById(long id) throws IOException, ClassNotFoundException {
-        try (FileInputStream fileInputStream = new FileInputStream(source + PREFIX + id + EXTENSION);
+        try (FileInputStream fileInputStream = new FileInputStream(source + prefix + id + EXTENSION);
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             return (Account) objectInputStream.readObject();
         }
@@ -57,13 +65,5 @@ public class AccountFileManager {
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void changeSource(String source) {
-        this.source = source;
     }
 }
