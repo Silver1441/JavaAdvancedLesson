@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class OutputFilesBuilder {
     @Getter @Setter private int numberOfThreads = 20;
+    @Getter @Setter private int numberOfTransactions = 1000;
     @NonNull private AccountFileManager accountFileManager;
     @NonNull private TransactionManager transactionManager;
     @NonNull private AccountsDao accountsDao;
@@ -31,7 +32,7 @@ public class OutputFilesBuilder {
                 .build();
         final ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads, factory);
         checkSumFromFiles();
-        for (int i = 1; i <= numberOfThreads; i++) {
+        for (int i = 1; i <= numberOfTransactions; i++) {
             executor.execute(new TransactionTask(transactionManager));
         }
         executor.shutdown();

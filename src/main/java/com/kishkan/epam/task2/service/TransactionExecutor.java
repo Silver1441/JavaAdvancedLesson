@@ -23,8 +23,7 @@ public class TransactionExecutor {
                         transactionId, sender.getId(), sender.getBalance(), recipient.getId(), recipient.getBalance(),
                         Thread.currentThread().getName());
 
-                sender.setBalance(sender.getBalance() - amount);
-                recipient.setBalance(recipient.getBalance() + amount);
+                makeCalculation(sender, recipient, amount);
 
                 log.info("\\ Transaction #{}, after:  from [id({}), balance({})] to [id({}), balance({})] (thread: {})",
                         transactionId, sender.getId(), sender.getBalance(), recipient.getId(), recipient.getBalance(),
@@ -55,6 +54,11 @@ public class TransactionExecutor {
             throw new InvalidAccountException(sender);
         }
         return true;
+    }
+
+    private void makeCalculation(Account sender, Account recipient, long amount) {
+        sender.setBalance(sender.getBalance() - amount);
+        recipient.setBalance(recipient.getBalance() + amount);
     }
 
     private void unlockAccounts(Account sender, Account recipient) {
