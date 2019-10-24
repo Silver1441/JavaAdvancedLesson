@@ -6,9 +6,8 @@ import java.util.Arrays;
 public class Application {
 
     public static void main(String[] args) {
-        Class entityClass = null;
         try {
-            entityClass = Class.forName("com.kishkan.epam.task3.Entity");
+            Class entityClass = Class.forName("com.kishkan.epam.task3.Entity");
             Entity instance = (Entity) entityClass.newInstance();
             Method[] methods = entityClass.getDeclaredMethods();
             for (Method method:methods) {
